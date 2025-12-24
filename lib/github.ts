@@ -33,11 +33,18 @@ export async function getLatestFirmware(): Promise<FirmwareInfo | null> {
     console.log("[v0] Token exists:", !!GITHUB_TOKEN)
     console.log("[v0] URL:", `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest`)
 
+    // Repo is public - no auth needed (fixes runtime env var issues)
+    const headers: Record<string, string> = {
+      Accept: "application/vnd.github.v3+json",
+    }
+
+    // Only add auth if token exists (optional for public repos)
+    if (GITHUB_TOKEN) {
+      headers.Authorization = `token ${GITHUB_TOKEN}`
+    }
+
     const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest`, {
-      headers: {
-        Authorization: `token ${GITHUB_TOKEN}`,
-        Accept: "application/vnd.github.v3+json",
-      },
+      headers,
       next: { revalidate: 60 },
     })
 
