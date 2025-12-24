@@ -20,12 +20,13 @@ export interface FirmwareInfo {
   notes: string
 }
 
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN
-const GITHUB_OWNER = process.env.GITHUB_OWNER || "sharique10-01"
-const GITHUB_REPO = process.env.GITHUB_REPO || "EnergyMeterOTA"
-
 export async function getLatestFirmware(): Promise<FirmwareInfo | null> {
   try {
+    // Read env vars inside function for runtime access
+    const GITHUB_TOKEN = process.env.GITHUB_TOKEN
+    const GITHUB_OWNER = process.env.GITHUB_OWNER || "sharique10-01"
+    const GITHUB_REPO = process.env.GITHUB_REPO || "EnergyMeterOTA"
+
     console.log("[v0] Fetching latest firmware from GitHub...")
     console.log("[v0] GitHub Owner:", GITHUB_OWNER)
     console.log("[v0] GitHub Repo:", GITHUB_REPO)
@@ -73,6 +74,10 @@ export async function getLatestFirmware(): Promise<FirmwareInfo | null> {
 
 export async function getAllReleases(): Promise<GitHubRelease[]> {
   try {
+    const GITHUB_TOKEN = process.env.GITHUB_TOKEN
+    const GITHUB_OWNER = process.env.GITHUB_OWNER || "sharique10-01"
+    const GITHUB_REPO = process.env.GITHUB_REPO || "EnergyMeterOTA"
+
     const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases`, {
       headers: {
         Authorization: `token ${GITHUB_TOKEN}`,
@@ -94,6 +99,10 @@ export async function getAllReleases(): Promise<GitHubRelease[]> {
 
 export async function createRelease(version: string, notes: string): Promise<GitHubRelease | null> {
   try {
+    const GITHUB_TOKEN = process.env.GITHUB_TOKEN
+    const GITHUB_OWNER = process.env.GITHUB_OWNER || "sharique10-01"
+    const GITHUB_REPO = process.env.GITHUB_REPO || "EnergyMeterOTA"
+
     const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases`, {
       method: "POST",
       headers: {
@@ -125,6 +134,8 @@ export async function createRelease(version: string, notes: string): Promise<Git
 
 export async function uploadAssetToRelease(uploadUrl: string, file: Buffer, filename: string): Promise<boolean> {
   try {
+    const GITHUB_TOKEN = process.env.GITHUB_TOKEN
+
     const cleanUrl = uploadUrl.replace("{?name,label}", "")
     const response = await fetch(`${cleanUrl}?name=${filename}`, {
       method: "POST",
