@@ -27,6 +27,10 @@ const GITHUB_REPO = process.env.GITHUB_REPO || "EnergyMeterOTA"
 export async function getLatestFirmware(): Promise<FirmwareInfo | null> {
   try {
     console.log("[v0] Fetching latest firmware from GitHub...")
+    console.log("[v0] GitHub Owner:", GITHUB_OWNER)
+    console.log("[v0] GitHub Repo:", GITHUB_REPO)
+    console.log("[v0] Token exists:", !!GITHUB_TOKEN)
+    console.log("[v0] URL:", `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest`)
 
     const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest`, {
       headers: {
