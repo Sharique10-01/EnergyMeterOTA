@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getSession, getAllUsers, createUser } from "@/lib/auth"
 
-// Get all users (requires authentication and create user permission)
+// Get all users (requires authentication and master role)
 export async function GET() {
   try {
     const session = await getSession()
@@ -18,12 +18,12 @@ export async function GET() {
 
     return NextResponse.json({ users })
   } catch (error) {
-    console.error("[v0] Get users error:", error)
+    console.error("[API] Get users error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
 
-// Create a new user (requires authentication and create user permission)
+// Create a new user (requires authentication and master role)
 export async function POST(request: NextRequest) {
   try {
     const session = await getSession()
@@ -42,6 +42,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Username and password are required" }, { status: 400 })
     }
 
+    if (password.length < 6) {
+      return NextResponse.json({ error: "Password must be at least 6 characters" }, { status: 400 })
+    }
+
     // Regular users cannot create users, only master can
     const user = await createUser(username, password, fullName || "", "user", false)
 
@@ -50,15 +54,16 @@ export async function POST(request: NextRequest) {
       user: {
         id: user.id,
         username: user.username,
-        fullName: user.full_name,
+        fullName: user.fullName,
         role: user.role,
-        canCreateUsers: user.can_create_users,
+        canCreateUsers: user.canCreateUsers,
       },
     })
-  } catch (error: any) {
-    console.error("[v0] Create user error:", error)
+  } catch (error: unknown) {
+    console.error("[API] Create user error:", error)
 
-    if (error?.message?.includes("duplicate key")) {
+    const errorMessage = error instanceof Error ? error.message : ""
+    if (errorMessage.includes("duplicate") || errorMessage.includes("E11000")) {
       return NextResponse.json({ error: "Username already exists" }, { status: 409 })
     }
 

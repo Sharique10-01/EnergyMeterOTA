@@ -4,6 +4,7 @@ export interface GitHubRelease {
   body: string
   published_at: string
   assets: GitHubAsset[]
+  upload_url: string
 }
 
 export interface GitHubAsset {
@@ -151,7 +152,7 @@ export async function uploadAssetToRelease(uploadUrl: string, file: Buffer, file
         "Content-Type": "application/octet-stream",
         Accept: "application/vnd.github.v3+json",
       },
-      body: file,
+      body: new Uint8Array(file),
     })
 
     return response.ok

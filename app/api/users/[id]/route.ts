@@ -14,18 +14,17 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     }
 
     const { id } = await params
-    const userId = Number.parseInt(id, 10)
 
-    if (isNaN(userId)) {
+    if (!id) {
       return NextResponse.json({ error: "Invalid user ID" }, { status: 400 })
     }
 
     // Prevent deleting yourself
-    if (userId === session.userId) {
+    if (id === session.userId) {
       return NextResponse.json({ error: "Cannot delete your own account" }, { status: 400 })
     }
 
-    const success = await deleteUser(userId)
+    const success = await deleteUser(id)
 
     if (!success) {
       return NextResponse.json({ error: "User not found or cannot be deleted" }, { status: 404 })
@@ -33,7 +32,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("[v0] Delete user error:", error)
+    console.error("[API] Delete user error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

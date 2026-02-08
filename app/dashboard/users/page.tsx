@@ -11,7 +11,7 @@ import { UserPlus, Trash2, Loader2 } from "lucide-react"
 import { CreateUserDialog } from "@/components/create-user-dialog"
 
 interface User {
-  id: number
+  id: string
   username: string
   fullName: string | null
   role: string
@@ -24,7 +24,7 @@ export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
-  const [deleteLoading, setDeleteLoading] = useState<number | null>(null)
+  const [deleteLoading, setDeleteLoading] = useState<string | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const fetchUsers = async () => {
@@ -49,7 +49,7 @@ export default function UsersPage() {
     fetchUsers()
   }, [])
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this user?")) {
       return
     }

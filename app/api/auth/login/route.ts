@@ -24,9 +24,9 @@ export async function POST(request: NextRequest) {
       user: {
         id: user.id,
         username: user.username,
-        fullName: user.full_name,
+        fullName: user.fullName,
         role: user.role,
-        canCreateUsers: user.can_create_users,
+        canCreateUsers: user.canCreateUsers,
       },
     })
   } catch (error) {
